@@ -55,7 +55,39 @@ dict_translations = {
         'Name of Surveyor': 'सर्वेक्षक का नाम', 'Date of Visit': 'दौरे की तिथि',
         'Submit': 'जमा करें', 'Yes': 'हाँ', 'No': 'नहीं', 'Download CSV': 'CSV डाउनलोड करें'
     },
-    'Telugu': { ... }  # Truncated for brevity
+     'Telugu': {
+        'Farmer Name': 'రైతు పేరు',
+        'Farmer Code': 'రైతు కోడ్',
+        'Gender': 'లింగం',
+        'Select Gender': 'లింగాన్ని ఎంచుకోండి',
+        'Male': 'పురుషుడు',
+        'Female': 'స్త్రీ',
+        'HPC/MCC Name': 'హెచ్‌పిసి/ఎంసిసి పేరు',
+        'HPC/MCC Code': 'హెచ్‌పిసి/ఎంసిసి కోడ్',
+        'Type': 'రకం',
+        'Select Type': 'రకం ఎంచుకోండి',
+        'HPCC': 'హెచ్‌పిసిసి',
+        'MCC': 'ఎంసిసి',
+        'Number of Cows': 'ఆవుల సంఖ్య',
+        'No. of Cattle in Milk': 'పాలలో పశువుల సంఖ్య',
+        'No. of Calves/Heifers': 'దూడలు/హెఫర్స్ సంఖ్య',
+        'No. of Desi Cows': 'దేశీ ఆవుల సంఖ్య',
+        'No. of Crossbreed Cows': 'క్రాస్‌బ్రీడ్ ఆవుల సంఖ్య',
+        'No. of Buffalo': 'గేదెల సంఖ్య',
+        'Milk Production (liters/day)': 'పాల ఉత్పత్తి (లీటర్లు/రోజు)',
+        'Type of Green Fodder': 'పచ్చి మేత రకం',
+        'Quantity of Green Fodder (Kg/day)': 'పచ్చి మేత పరిమాణం (కిలోలు/రోజు)',
+        'Type of Dry Fodder': 'పొడి మేత రకం',
+        'Quantity of Dry Fodder (Kg/day)': 'పొడి మేత పరిమాణం (కిలోలు/రోజు)',
+        'Brand of Concentrate Feed': 'సాంద్రీకృత ఫీడ్ బ్రాండ్',
+        'Quantity of Concentrate Feed (Kg/day)': 'సాంద్రీకృత ఫీడ్ పరిమాణం (కిలోలు/రోజు)',
+        'Brand of Mineral Mixture': 'ఖనిజ మిశ్రమం బ్రాండ్',
+        'Quantity of Mineral Mixture (gm/day)': 'ఖనిజ మిశ్రమ పరిమాణం (గ్రాములు/రోజు)',
+        'Source and Price of Silage': 'సైలేజ్ మూలం మరియు ధర',
+        'Quantity of Silage (Kg/day)': 'సైలేజ్ పరిమాణం (కిలోలు/రోజు)',
+        'Source of Water': 'నీటి మూలం',
+        'Submit': 'సమర్పించండి',
+    }
 }
 
 # Streamlit Page Config

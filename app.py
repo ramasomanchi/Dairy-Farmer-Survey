@@ -1,158 +1,130 @@
-# app.py
+# Updated Streamlit App
 
 import streamlit as st
 import pandas as pd
-import os
 import datetime
+import os
 
-# -------------------------
-# Translation dictionary
-# -------------------------
-translations = {
+# Translations
+dict_translations = {
     'English': {
         'Farmer Name': 'Farmer Name',
         'Farmer Code': 'Farmer Code',
         'Gender': 'Gender',
         'Select Gender': 'Select Gender',
-        'Male': 'Male',
-        'Female': 'Female',
-        'HPC/MCC Name': 'HPC/MCC Name',
-        'HPC/MCC Code': 'HPC/MCC Code',
-        'Type': 'Type',
-        'Select Type': 'Select Type',
-        'HPCC': 'HPCC',
-        'MCC': 'MCC',
-        'Number of Cows': 'Number of Cows',
-        'No. of Cattle in Milk': 'No. of Cattle in Milk',
-        'No. of Calves/Heifers': 'No. of Calves/Heifers',
-        'No. of Desi Cows': 'No. of Desi Cows',
-        'No. of Crossbreed Cows': 'No. of Crossbreed Cows',
-        'No. of Buffalo': 'No. of Buffalo',
-        'Milk Production (liters/day)': 'Milk Production (liters/day)',
+        'Male': 'Male', 'Female': 'Female',
+        'Submit': 'Submit', 'Language': 'Language',
+        'Specific Questions': 'Specific Questions',
+        'Green Fodder': 'Green Fodder',
+        'Type of Green Fodder': 'Type of Green Fodder',
+        'Quantity of Green Fodder': 'Quantity of Green Fodder (Kg/day)',
+        'Dry Fodder': 'Dry Fodder',
+        'Type of Dry Fodder': 'Type of Dry Fodder',
+        'Quantity of Dry Fodder': 'Quantity of Dry Fodder (Kg/day)',
+        'Concentrate Feed': 'Concentrate Feed',
+        'Brand of Concentrate Feed': 'Brand of Concentrate Feed',
+        'Quantity of Concentrate Feed': 'Quantity of Concentrate Feed (Kg/day)',
+        'Mineral Mixture': 'Mineral Mixture',
+        'Brand of Mineral Mixture': 'Brand of Mineral Mixture',
+        'Quantity of Mineral Mixture': 'Quantity of Mineral Mixture (gms/day)',
+        'Silage': 'Silage',
+        'Source and Price of Silage': 'Source and Price of Silage',
+        'Quantity of Silage': 'Quantity of Silage (Kg/day)',
         'Source of Water': 'Source of Water',
-        'Submit': 'Submit',
+        'Yes': 'Yes', 'No': 'No'
     },
     'Hindi': {
         'Farmer Name': 'किसान का नाम',
         'Farmer Code': 'किसान कोड',
         'Gender': 'लिंग',
         'Select Gender': 'लिंग चुनें',
-        'Male': 'पुरुष',
-        'Female': 'महिला',
-        'HPC/MCC Name': 'एचपीसी/एमसीसी नाम',
-        'HPC/MCC Code': 'एचपीसी/एमसीसी कोड',
-        'Type': 'प्रकार',
-        'Select Type': 'प्रकार चुनें',
-        'HPCC': 'एचपीसीसी',
-        'MCC': 'एमसीसी',
-        'Number of Cows': 'गायों की संख्या',
-        'No. of Cattle in Milk': 'दूध वाली गायों की संख्या',
-        'No. of Calves/Heifers': 'बछड़ों/हिफर्स की संख्या',
-        'No. of Desi Cows': 'देसी गायों की संख्या',
-        'No. of Crossbreed Cows': 'क्रॉसब्रीड गायों की संख्या',
-        'No. of Buffalo': 'भैंसों की संख्या',
-        'Milk Production (liters/day)': 'दूध उत्पादन (लीटर/दिन)',
+        'Male': 'पुरुष', 'Female': 'महिला',
+        'Submit': 'जमा करें', 'Language': 'भाषा',
+        'Specific Questions': 'विशेष प्रश्न',
+        'Green Fodder': 'हरा चारा',
+        'Type of Green Fodder': 'हरे चारे का प्रकार',
+        'Quantity of Green Fodder': 'हरे चारे की मात्रा (Kg/day)',
+        'Dry Fodder': 'सूखा चारा',
+        'Type of Dry Fodder': 'सूखे चारे का प्रकार',
+        'Quantity of Dry Fodder': 'सूखे चारे की मात्रा (Kg/day)',
+        'Concentrate Feed': 'सांद्रित चारा',
+        'Brand of Concentrate Feed': 'सांद्रित चारे का ब्रांड',
+        'Quantity of Concentrate Feed': 'सांद्रित चारे की मात्रा (Kg/day)',
+        'Mineral Mixture': 'खनिज मिश्रण',
+        'Brand of Mineral Mixture': 'खनिज मिश्रण का ब्रांड',
+        'Quantity of Mineral Mixture': 'खनिज मिश्रण की मात्रा (gms/day)',
+        'Silage': 'साइलेज',
+        'Source and Price of Silage': 'साइलेज का स्रोत और मूल्य',
+        'Quantity of Silage': 'साइलेज की मात्रा (Kg/day)',
         'Source of Water': 'पानी का स्रोत',
-        'Submit': 'जमा करें',
-    },
-    'Telugu': {
-        'Farmer Name': 'రైతు పేరు',
-        'Farmer Code': 'రైతు కోడ్',
-        'Gender': 'లింగం',
-        'Select Gender': 'లింగం చయందించండి',
-        'Male': 'పురుషుడు',
-        'Female': 'స్త్రీ',
-        'HPC/MCC Name': 'హ్పిసీ/ఎంసీసీ పేరు',
-        'HPC/MCC Code': 'హ్పిసీ/ఎంసీసీ కోడ్',
-        'Type': 'ప్రకారం',
-        'Select Type': 'ప్రకారం చయందించండి',
-        'HPCC': 'HPCC',
-        'MCC': 'MCC',
-        'Number of Cows': 'అవుల సంఖ్య',
-        'No. of Cattle in Milk': 'పాలు లో ఉన్నతా జనాలు',
-        'No. of Calves/Heifers': 'కారులు/హైఫర్స్ సంఖ్య',
-        'No. of Desi Cows': 'దేసి అవుల సంఖ్య',
-        'No. of Crossbreed Cows': 'క్రాస్బ్రీడ్ అవుల సంఖ్య',
-        'No. of Buffalo': 'మేలకుల సంఖ్య',
-        'Milk Production (liters/day)': 'పాలు ఉత్పాదనం (లీటర్లు/రోజు)',
-        'Source of Water': 'నీటి తొట్టి',
-        'Submit': 'సమర్పించండి',
+        'Yes': 'हाँ', 'No': 'नही'
     }
 }
 
-# -------------------------
-# Streamlit App
-# -------------------------
-st.set_page_config(page_title="Dairy Survey Form", page_icon="🐮", layout="centered")
+st.set_page_config(page_title="Dairy Farmer Survey", layout="centered")
 
-st.title("🐮 Dairy Farmer Survey")
+lang = st.selectbox("Select Language", list(dict_translations.keys()))
+labels = dict_translations.get(lang, dict_translations['English'])
 
-lang = st.selectbox("Select Language", list(translations.keys()))
-labels = translations.get(lang)
+st.title(labels['Farmer Name'] + " ✨ " + labels['Farmer Code'])
 
-# Form
 with st.form("survey_form"):
     farmer_name = st.text_input(labels['Farmer Name'])
     farmer_code = st.text_input(labels['Farmer Code'])
-    gender = st.selectbox(labels['Gender'], [labels['Male'], labels['Female']])
-    hpc_name = st.text_input(labels['HPC/MCC Name'])
-    hpc_code = st.text_input(labels['HPC/MCC Code'])
-    farmer_type = st.selectbox(labels['Type'], [labels['HPCC'], labels['MCC']])
-    cows = st.number_input(labels['Number of Cows'], min_value=0)
-    cattle_milk = st.number_input(labels['No. of Cattle in Milk'], min_value=0)
-    calves = st.number_input(labels['No. of Calves/Heifers'], min_value=0)
-    desi_cows = st.number_input(labels['No. of Desi Cows'], min_value=0)
-    crossbreed_cows = st.number_input(labels['No. of Crossbreed Cows'], min_value=0)
-    buffaloes = st.number_input(labels['No. of Buffalo'], min_value=0)
-    milk_production = st.number_input(labels['Milk Production (liters/day)'], min_value=0)
+    gender = st.selectbox(labels['Gender'], (labels['Male'], labels['Female']))
+
+    st.subheader(labels['Specific Questions'])
+    green_fodder = st.selectbox(labels['Green Fodder'], (labels['Yes'], labels['No']))
+    type_green = st.text_input(labels['Type of Green Fodder'])
+    qty_green = st.number_input(labels['Quantity of Green Fodder'], min_value=0)
+
+    dry_fodder = st.selectbox(labels['Dry Fodder'], (labels['Yes'], labels['No']))
+    type_dry = st.text_input(labels['Type of Dry Fodder'])
+    qty_dry = st.number_input(labels['Quantity of Dry Fodder'], min_value=0)
+
+    concentrate = st.selectbox(labels['Concentrate Feed'], (labels['Yes'], labels['No']))
+    brand_concentrate = st.text_input(labels['Brand of Concentrate Feed'])
+    qty_concentrate = st.number_input(labels['Quantity of Concentrate Feed'], min_value=0)
+
+    mineral = st.selectbox(labels['Mineral Mixture'], (labels['Yes'], labels['No']))
+    brand_mineral = st.text_input(labels['Brand of Mineral Mixture'])
+    qty_mineral = st.number_input(labels['Quantity of Mineral Mixture'], min_value=0)
+
+    silage = st.selectbox(labels['Silage'], (labels['Yes'], labels['No']))
+    source_price = st.text_input(labels['Source and Price of Silage'])
+    qty_silage = st.number_input(labels['Quantity of Silage'], min_value=0)
+
     water_source = st.text_input(labels['Source of Water'])
 
     submit = st.form_submit_button(labels['Submit'])
 
-# Save Submission
 if submit:
-    if not os.path.exists("survey_responses"):
-        os.makedirs("survey_responses")
+    folder = 'survey_responses'
+    os.makedirs(folder, exist_ok=True)
+    filepath = os.path.join(folder, 'responses.csv')
+    now = datetime.datetime.now()
 
-    new_data = {
-        'Timestamp': datetime.datetime.now().isoformat(),
-        'Language': lang,
-        'Farmer Name': farmer_name,
-        'Farmer Code': farmer_code,
-        'Gender': gender,
-        'HPC/MCC Name': hpc_name,
-        'HPC/MCC Code': hpc_code,
-        'Type': farmer_type,
-        'Number of Cows': cows,
-        'No. of Cattle in Milk': cattle_milk,
-        'No. of Calves/Heifers': calves,
-        'No. of Desi Cows': desi_cows,
-        'No. of Crossbreed Cows': crossbreed_cows,
-        'No. of Buffalo': buffaloes,
-        'Milk Production (liters/day)': milk_production,
-        'Source of Water': water_source
+    data = {
+        'Timestamp': [now.isoformat()], 'Language': [lang],
+        'Farmer Name': [farmer_name], 'Farmer Code': [farmer_code], 'Gender': [gender],
+        'Green Fodder': [green_fodder], 'Type Green': [type_green], 'Qty Green': [qty_green],
+        'Dry Fodder': [dry_fodder], 'Type Dry': [type_dry], 'Qty Dry': [qty_dry],
+        'Concentrate Feed': [concentrate], 'Brand Concentrate': [brand_concentrate], 'Qty Concentrate': [qty_concentrate],
+        'Mineral Mixture': [mineral], 'Brand Mineral': [brand_mineral], 'Qty Mineral': [qty_mineral],
+        'Silage': [silage], 'Source and Price Silage': [source_price], 'Qty Silage': [qty_silage],
+        'Water Source': [water_source]
     }
 
-    df = pd.DataFrame([new_data])
-
-    csv_path = "survey_responses/responses.csv"
-    if os.path.exists(csv_path):
-        df.to_csv(csv_path, mode='a', index=False, header=False)
+    df = pd.DataFrame(data)
+    if os.path.exists(filepath):
+        df.to_csv(filepath, mode='a', header=False, index=False)
     else:
-        df.to_csv(csv_path, index=False)
+        df.to_csv(filepath, index=False)
 
-    st.success("✅ Survey response saved successfully!")
+    st.success("✅ Response Saved!")
 
-# View and Download past submissions
-if os.path.exists("survey_responses/responses.csv"):
-    st.subheader("📅 Past Submissions")
-    data = pd.read_csv("survey_responses/responses.csv")
-    st.dataframe(data)
-
-    csv = data.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="🔖 Download All Submissions",
-        data=csv,
-        file_name='survey_submissions.csv',
-        mime='text/csv'
-    )
+if os.path.exists('survey_responses/responses.csv'):
+    st.header("📄 Past Submissions")
+    all_data = pd.read_csv('survey_responses/responses.csv')
+    st.dataframe(all_data)
+    st.download_button("📥 Download Responses CSV", data=all_data.to_csv(index=False).encode('utf-8'), file_name='responses.csv')

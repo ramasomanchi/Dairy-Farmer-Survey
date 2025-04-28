@@ -87,7 +87,7 @@ dict_translations = {
         'Quantity of Silage (Kg/day)': 'సైలేజ్ పరిమాణం (కిలోలు/రోజు)',
         'Source of Water': 'నీటి మూలం',
         'Submit': 'సమర్పించండి',
-    }
+    
 }
 
 # Streamlit Page Config

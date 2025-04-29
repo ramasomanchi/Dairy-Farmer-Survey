@@ -4,8 +4,7 @@ import streamlit as st
 import pandas as pd
 import datetime
 import os
-
-# Ensure save folder exists
+from streamlit_gsheets import GSheetsConnection
 SAVE_DIR = 'survey_responses'
 os.makedirs(SAVE_DIR, exist_ok=True)
 
@@ -194,6 +193,14 @@ if st.checkbox("📄 View Past Submissions (Everyone)"):
         )
     else:
         st.info("No submissions available yet.")
+
+ # Connect to Google Sheet and append data
+    conn = st.experimental_connection("gsheets", type=GSheetsConnection)
+    existing_df = conn.read(worksheet="Sheet1")
+    combined_df = pd.concat([existing_df, df], ignore_index=True)
+    conn.update(worksheet="Sheet1", data=combined_df)
+
+    st.success("✅ Survey Submitted and Synced to Google Sheets!")
 
 # === Admin Special Access (Optional) ===
 st.divider()

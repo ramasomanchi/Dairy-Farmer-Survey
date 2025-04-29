@@ -168,7 +168,7 @@ if submit:
         'Surveyor Name': [surveyor_name],
         'Date of Visit': [visit_date]
     }
-      df = pd.DataFrame(data)
+    df = pd.DataFrame(data)
 
     # Connect to Google Sheet and append data
     conn = st.experimental_connection("gsheets", type=GSheetsConnection)
@@ -189,8 +189,6 @@ if st.button("⬇️ Download Full Sheet as CSV Backup"):
         file_name="dairy_survey_backup.csv",
         mime="text/csv"
     )
-
-
 # === Admin Special Access (Optional) ===
 st.divider()
 st.header("🔐 Admin Real-Time Access")

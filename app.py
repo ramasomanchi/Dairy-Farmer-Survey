@@ -1,12 +1,10 @@
 # app.py (Final Streamlit Dairy Survey)
-
+# Required imports for Google Sheets integration
 import streamlit as st
 import pandas as pd
 import datetime
-import os
 from streamlit_gsheets import GSheetsConnection
-SAVE_DIR = 'survey_responses'
-os.makedirs(SAVE_DIR, exist_ok=True)
+from io import BytesIO
 
 # Multilingual Translations
 dict_translations = {
@@ -170,37 +168,29 @@ if submit:
         'Surveyor Name': [surveyor_name],
         'Date of Visit': [visit_date]
     }
-    df = pd.DataFrame(data)
-    filename = f"survey_{now.strftime('%Y%m%d_%H%M%S')}.csv"
-    df.to_csv(os.path.join(SAVE_DIR, filename), index=False, encoding='utf-8')
-    st.success("✅ Survey Submitted and Saved!")
-# === Download Section for Everyone ===
-if st.checkbox("📄 View Past Submissions (Everyone)"):
-    files = os.listdir(SAVE_DIR)
-    if files:
-        all_data = pd.concat([
-            pd.read_csv(os.path.join(SAVE_DIR, f))
-            for f in files if f.endswith('.csv')
-        ], ignore_index=True)
-        st.dataframe(all_data)
+   
+      df = pd.DataFrame(data)
 
-        csv = all_data.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="⬇️ Download All Responses",
-            data=csv,
-            file_name='all_survey_responses.csv',
-            mime='text/csv'
-        )
-    else:
-        st.info("No submissions available yet.")
-
- # Connect to Google Sheet and append data
+    # Connect to Google Sheet and append data
     conn = st.experimental_connection("gsheets", type=GSheetsConnection)
     existing_df = conn.read(worksheet="Sheet1")
     combined_df = pd.concat([existing_df, df], ignore_index=True)
     conn.update(worksheet="Sheet1", data=combined_df)
 
     st.success("✅ Survey Submitted and Synced to Google Sheets!")
+
+# Optional offline backup
+if st.button("⬇️ Download Full Sheet as CSV Backup"):
+    conn = st.experimental_connection("gsheets", type=GSheetsConnection)
+    sheet_df = conn.read(worksheet="Sheet1")
+    csv_bytes = sheet_df.to_csv(index=False).encode("utf-8")
+    st.download_button(
+        label="Download Backup CSV",
+        data=BytesIO(csv_bytes),
+        file_name="dairy_survey_backup.csv",
+        mime="text/csv"
+    )
+
 
 # === Admin Special Access (Optional) ===
 st.divider()

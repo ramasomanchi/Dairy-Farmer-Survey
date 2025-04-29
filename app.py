@@ -168,7 +168,6 @@ if submit:
         'Surveyor Name': [surveyor_name],
         'Date of Visit': [visit_date]
     }
-   
       df = pd.DataFrame(data)
 
     # Connect to Google Sheet and append data

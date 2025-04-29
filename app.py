@@ -189,3 +189,38 @@ if st.checkbox("📄 View Past Submissions"):
         file_name='all_survey_responses.csv',
         mime='text/csv'
     )
+
+# === Download Section for Everyone ===
+if st.checkbox("📄 View Past Submissions (Everyone)"):
+    files = os.listdir(SAVE_DIR)
+    if files:
+        all_data = pd.concat([
+            pd.read_csv(os.path.join(SAVE_DIR, f))
+            for f in files if f.endswith('.csv')
+        ], ignore_index=True)
+        st.dataframe(all_data)
+
+        csv = all_data.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="⬇️ Download All Responses",
+            data=csv,
+            file_name='all_survey_responses.csv',
+            mime='text/csv'
+        )
+    else:
+        st.info("No submissions available yet.")
+
+# === Admin Special Access (Optional) ===
+st.divider()
+st.header("🔐 Admin Real-Time Access")
+
+# Allowed Emails
+ALLOWED_EMAILS = ["shifalis@tns.org", "rmukherjee@tns.org","rsomanchi@tns.org"]
+admin_email = st.text_input("Enter your Admin Email to unlock extra features:")
+
+if admin_email in ALLOWED_EMAILS:
+    st.success("✅ Admin access granted! Real-time view enabled.")
+    # (Here you can later add: auto-refreshing dashboard, edit submissions, etc.)
+else:
+    if admin_email:
+        st.error("❌ Not an authorized admin.")
